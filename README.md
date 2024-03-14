@@ -7,6 +7,9 @@ A python client to extract metadata from the RestApi of the further developed Sa
 - Supported Databases
     - Microsoft SQL Server
 
+- Authenthification
+    - Trusted DB Connection must be accepted from the local DB
+
 
 ## Installation 
 Execute Run.py to extract all neccessary mapping information in tabular manner from MDR RestApi. Before doing that you declare some variables in main.py.

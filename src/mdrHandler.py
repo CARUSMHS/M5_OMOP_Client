@@ -20,8 +20,8 @@ class mdrClient:
         OMOP Metadata Extractor -- this function read all the element concept information depending on selected dict. Furthermore it enrich concepts information
         with slots (in this case the Concept Class Slot) if possible. It always chooses the last dict version dependless if it is released or in a draft
         """
-
-        # höchste dict Version auslesen
+        print("Fetching Metadata from IAM MDR")
+        # read highest dict version
         dict_endpoint = self.url + f"/{dictionary}"
         request = requests.get(dict_endpoint).json()
         dict_version = request.get("dataDictionaryVersions")
@@ -106,6 +106,8 @@ class mdrClient:
                 "index": "element_id",
             }
         )
+
+        print("Metadata is succesfully fecthed from MDR RestApi")
 
         return df
 
