@@ -6,27 +6,40 @@ class DBConnector:
     Database Connector
     """
 
-    def __init__(self):
-        self.database = "MicrosoftSQL"
+    def __init__(self, db_system):
+        self.db_system = db_system
 
-    def DatabaseConnector(self, server, database):
+    def DatabaseConnector(self, server, database, user=False, password=False, trusted_con=False):
 
         # Microsoft SQL Server Configuration
-        if self.database == "MicrosoftSQL":
+        if self.db_system == "MicrosoftSQL":
 
-            conn_string_msql = (
-                r"Driver={ODBC Driver 17 for SQL Server};"
-                f"Server= {server};"
-                f"Database={database};"
-                r"Trusted_Connection=yes"
-                )
-            connection_url = sq.URL.create("mssql+pyodbc", query={"odbc_connect": conn_string_msql})
-            engine = sq.create_engine(connection_url) 
-            print("Database Engine is successfully created.")
+            if trusted_con==True:
+
+                url_object = "mssql+pyodbc://" + server + "/" + database + "?driver=ODBC+Driver+17+for+SQL+Server"
+
+            else: 
+
+                url_object = "mssql+pyodbc://" + user + ":" + password + "@" + server + "/" + database + "?driver=ODBC+Driver+17+for+SQL+Server"
+
+            engine = sq.create_engine(url_object)
+
+            print("Micrsoft SQL Database Engine is successfully created.")
+            return (engine)
+        
+    # PostgreSQL Configuration
+        elif self.db_system == "PostgreSQL":
+            
+            url_object = "postgresql+psycopg2://" + user + ":" + password + "@" + server + "/" + database 
+            
+            engine = sq.create_engine(url_object) 
+
+            print("PostgreSQL Database Engine is successfully created.")
             return (engine)
         
         else:
             print("This Database is not supoorted.")
+
 
 
 
