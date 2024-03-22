@@ -8,7 +8,7 @@ import numpy as np
 ## class
 class mdrClient:
     """
-    Data Extraction Client for MDR REST API
+    Data Extraction Client for M5 REST API
     """
 
     def __init__(self):
@@ -20,7 +20,7 @@ class mdrClient:
         OMOP Metadata Extractor -- this function read all the element concept information depending on selected dict. Furthermore it enrich concepts information
         with slots (in this case the Concept Class Slot) if possible. It always chooses the last dict version dependless if it is released or in a draft
         """
-        print("Fetching Metadata from IAM MDR")
+        print("Fetching Metadata from IAM M5")
         # read highest dict version
         dict_endpoint = self.url + f"/{dictionary}"
         request = requests.get(dict_endpoint).json()
@@ -107,7 +107,7 @@ class mdrClient:
             }
         )
 
-        print("Metadata is succesfully fecthed from MDR RestApi")
+        print("Metadata is succesfully fecthed from M5 RestApi")
 
         return df
 

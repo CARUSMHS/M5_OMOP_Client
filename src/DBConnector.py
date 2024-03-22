@@ -1,4 +1,5 @@
 import sqlalchemy as sq
+import oracledb
 
 
 class DBConnector:
@@ -9,7 +10,7 @@ class DBConnector:
     def __init__(self, db_system):
         self.db_system = db_system
 
-    def DatabaseConnector(self, server, database, user=False, password=False, trusted_con=False):
+    def DatabaseConnector(self, server, database, user: None, password= None, trusted_con= None, port= None, SID= None):
 
         # Microsoft SQL Server Configuration
         if self.db_system == "MicrosoftSQL":
@@ -36,6 +37,16 @@ class DBConnector:
 
             print("PostgreSQL Database Engine is successfully created.")
             return (engine)
+        
+        elif self.db_system == "Oracle": # TODO: funktioniert noch nicht, DBAPI Fehler
+
+            url_object = "oracle+oracledb://" + user +  "/" + password  + "@" + server + ":" + port + '/' + SID
+
+            engine = sq.create_engine(url_object)
+
+            print("Oracle Database Engine is successfully created.")
+            return (engine)
+
         
         else:
             print("This Database is not supoorted.")
