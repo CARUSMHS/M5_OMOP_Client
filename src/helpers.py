@@ -1,4 +1,5 @@
 from transformers import MarianMTModel, MarianTokenizer
+import requests
 
 def translate_column(df, column_name):
         """
@@ -11,7 +12,6 @@ def translate_column(df, column_name):
 
         translated_column = []
 
-        translated_column = []
         for index, value in df[column_name].items():
             try:
                 # Tokenize input text
@@ -25,3 +25,30 @@ def translate_column(df, column_name):
             translated_column.append(translated_text)
         df['en_' + column_name] = translated_column
         return df
+
+
+def extract_keyValues(api_endpoint):
+
+    req = requests.get(api_endpoint).json()
+
+    def extract_values(json_dict):
+        result = []
+        for key , value in json_dict.items():
+            if isinstance(value, dict):
+                result += [
+                    (f'{key}_{val[0]}', val[1]) for val in extract_values(value)
+                    ]
+            elif isinstance(value, str):
+                result.append((key, value))
+            elif isinstance(value, list):
+                result += [
+                    (f'{key}_{val[0]}', val[1]) for i in range(len(value)) 
+                    for val in extract_values(value[i])
+                    ]
+            else:
+                continue 
+
+        return result
+    
+    return extract_values(req)
+

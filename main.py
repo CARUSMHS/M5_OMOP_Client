@@ -1,14 +1,13 @@
-from src.mdrHandler import mdrClient
+from src.M5Handler import OMOP_Client
 from src.DBConnector import DBConnector
-from src.m5_vis import M5_vis
 
 
-## connect to your local database
+## connect to your local database and choose your database system (supported DBs: Oracle, PostgreSQL, MicrosoftSQL)--> Case sensitive
 con = DBConnector(db_system="Oracle")
-connection =con.DatabaseConnector(server="UCCH-OUMUAMUA",database="MEDBASE_STAGE",trusted_con=True)
+connection =con.DatabaseConnector(user=user,password=password,server=server, port=port,SID=SID)
 
 ## extract Mapping information from MDR RestApi
-m5 = mdrClient()
+m5 = OMOP_Client()
 M5_fetch = m5.mapping_data(dictionary='OMOP')
 
 ## insert metadata into your local database, therefore metadata schema is used (please use = CREATE SCHEMA metadata;)
@@ -19,13 +18,4 @@ M5_fetch.to_sql(
 # close database connection
 connection.dispose()
 
-
-
-## visulisation
-vis = M5_vis(M5_fetch)
-
-vis_dat = vis.translate_column('element') ## be careful, this can took a long time, maybe it is better to run it over night.
-
-
-bar_chart = vis.bar_chart()
-
+    

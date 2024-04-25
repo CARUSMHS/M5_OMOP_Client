@@ -1,43 +1,37 @@
-# MDR_Client
-A python client to extract metadata from the RestApi of the further developed SamplyMDR
+# M5-OMOP-Client
+A python client to extract metadata from the M5-REST API, furthermore it provides the possibility to automatically import the OMOP Metadata into a relational database (supported systems: **PostgreSQL, ORACLE, SQL SERVER**)
 
 ## Requirements
-- Access to IAM Metadata Repository [https://mdrdev2.iam-extern.de/m5.gui/index.xhtml]
+- Access to M5 REST API [https://mdrdev2.iam-extern.de/m5.rest/api/]
 
 - Supported Databases
     - Microsoft SQL Server (Windows Athentification + SQL Server Authentification)
     - ProstgreSQL
+    - Oracle (Attention: python-oracledb driver only accepts password verifiers 11G and later)
 
 
-## Installation 
-Execute Main.py to extract all neccessary mapping information in tabular manner from M5 RestApi. Before doing that you have to declare department specific variables in main.py.
+## Application
 
+1. Do the Database Configuration in main.py (more information about database configuration [[(src/DBConnector.py)]]). 
 
-- Local Database variables
-    The Database Destination for the M5 Metadata Extraction
-    - server : Server name of your local staging database
-    - database : name of your staging database
-
+```python
+con = DBConnector(db_system="Oracle")
+connection =con.DatabaseConnector(user=user,password=password,server=server, port=port,SID=SID)
 ```
-# MicrsoftSQL configuration
-    # Windows Athentification
-con = DBConnector(db_system="MicrosoftSQL")
-connection =con.DatabaseConnector(server='your server', database='your database', trusted_con=True)
 
-    # SQL Server Authentification
-con = DBConnector(db_system="MicrosoftSQL")
-connection =con.DatabaseConnector(server='your server', database='your database', user='your user', password='your password')
+2. Run the OMOP_Client class in main.py and save output in *M5_fetch*
 
-# PostgreSQl configuration
-con = DBConnector(db_system="PostgreSQL")
-connection =con.DatabaseConnector(server='your server', database='your database', user='your user', password='your password')
+```python
+m5 = OMOP_Client()
+M5_fetch = m5.mapping_data(dictionary='OMOP')
+```
+
+3. Import *M5_fetch* into your local database, using your database configuration defined in step 1, and close connection
+
+```python
+M5_fetch.to_sql(
+    name="Test", con=connection, schema="metadata", if_exists="replace"
 )
+connection.dispose()
+```
 
-```
-- MDR variables
-    -   dictioanary : should be set to OMOP if not other specified
-    -   table : (optional) if you only want to extract table specific metadata in your defined dictionary
-```
-mdr = mdrClient() 
-Meta_fetch = mdr.mapping_data(dictionary='OMOP')
-```

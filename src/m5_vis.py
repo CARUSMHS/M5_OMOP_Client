@@ -1,6 +1,8 @@
-import pandas as pd
 import plotly.express as px
-from .mdrHandler import mdrClient
+import sys
+print(sys.path)
+
+#sys.path.append("C:/Users/jac/Documents/GitRepos/MDR_Client/src")
 from .helpers import translate_column
 
 
@@ -12,7 +14,7 @@ class M5_vis:
     def __init__(self, m5_data):
         self.m5 = m5_data    
 
-    def bar_chart(self):
+    def bar_chart(self, path):
         """
         Bar plot to visualise all elements included in M5 dictionary
         data: M5 dict extraction
@@ -23,11 +25,11 @@ class M5_vis:
         ## preprocessing
 
         # cleaning
-        self.m5.loc[self.m5['dataType'] == 'STRING','element'] = 'Genetik'
+        self.m5.loc[self.m5['table'] == 'Genmutation','element'] = 'Genetik'
         self.m5['element'] = self.m5['element'].str.replace('_', ' ')
     
         # preparing
-        vis_dat = self.m5.groupby(['element', 'conceptType']).size()
+        vis_dat = self.m5.groupby(['element', 'conceptType', 'conceptDomain']).size()
         vis_dat = vis_dat.to_frame(name = 'count').reset_index()
         vis_dat = vis_dat.loc[(vis_dat["count"] > 10)] # exclude elements with small occurrence expressions
         vis_dat = translate_column(vis_dat, 'element')
@@ -43,10 +45,14 @@ class M5_vis:
             x='count',
             color='conceptType',
             color_discrete_sequence= px.colors.qualitative.Pastel2,
-            text_auto=True
-            )
+            text_auto=True,
+            facet_col ='conceptDomain', facet_col_wrap=7,
+            labels={
+            "en_element": "oBDS Element",
+            "conceptType": "Vocabulary"
+              }
+              )
 
-        fig.write_image('C:/Users/jac/ukebox3/UCCH_IT/Publikationen/MDR/Visualisation/bar_plot.png')
-        #(f"{path}\bar_plot.png")
+        fig.write_image(f"{path}\bar_plot.png")
     
         return fig.show()

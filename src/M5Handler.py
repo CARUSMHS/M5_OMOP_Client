@@ -6,7 +6,7 @@ import numpy as np
 
 
 ## class
-class mdrClient:
+class OMOP_Client:
     """
     Data Extraction Client for M5 REST API
     """
@@ -110,8 +110,5 @@ class mdrClient:
         print("Metadata is succesfully fecthed from M5 RestApi")
 
         return df
-
-
-
 
 
